@@ -24,7 +24,7 @@ const ICON = {
   close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
   eye: svg('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>'),
   eyeOff: svg('<path d="M4 4l16 16"/><path d="M9.9 5.8A9 9 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a16 16 0 0 1-2.8 3.5M6.2 7.3A16 16 0 0 0 2.5 12S6 18.5 12 18.5a9 9 0 0 0 3.6-.8"/><path d="M9.9 10a2.8 2.8 0 0 0 4 4"/>'),
-  bulb: svg('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2.2h5c.1-1 .5-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>'),
+  done: svg('<circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.7 2.7 5.3-5.6"/>'),
   // أنواع البطاقات
   opener: svg('<path d="M12 3.5l2.2 5.1 5.5.5-4.2 3.6 1.3 5.4L12 15.2l-4.8 2.9 1.3-5.4-4.2-3.6 5.5-.5z"/>'),
   test: svg('<rect x="5" y="4.5" width="14" height="16" rx="2.5"/><path d="M9 3.5h6v3H9z"/><path d="M8.8 13l2.2 2.2 4.2-4.4"/>'),
@@ -205,9 +205,10 @@ function enter(data) {
 }
 
 /* ——— الوقت والتاريخ ——— */
-const fmtTime = new Intl.DateTimeFormat('ar-SA-u-nu-arab', { timeZone: TZ, hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+const fmtTime = new Intl.DateTimeFormat('ar-SA-u-nu-arab', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true });
 const fmtHour = new Intl.DateTimeFormat('en-US-u-nu-latn', { timeZone: TZ, hour: 'numeric', hourCycle: 'h23' });
-const fmtHijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const fmtHijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-arab', { timeZone: TZ, day: 'numeric', month: 'long', year: 'numeric' });
+const fmtWeekday = new Intl.DateTimeFormat('ar-SA', { timeZone: TZ, weekday: 'long' });
 const fmtGreg = new Intl.DateTimeFormat('ar-SA-u-ca-gregory-nu-arab', { timeZone: TZ, day: 'numeric', month: 'long', year: 'numeric' });
 
 function greetingFor(hour) {
@@ -223,7 +224,7 @@ function tick() {
 
   const parts = fmtTime.formatToParts(now);
   const get = (t) => parts.find((p) => p.type === t)?.value ?? '';
-  timeEl.textContent = `${get('hour')}:${get('minute')}:${get('second')}`;
+  timeEl.textContent = `${get('hour')}:${get('minute')}`;
   $('#clock-period').textContent = get('dayPeriod');
 
   const hour = Number(fmtHour.format(now)) % 24;
@@ -239,7 +240,8 @@ function tick() {
   const hijriEl = $('#date-hijri');
   if (hijriEl.textContent !== hijri) {
     hijriEl.textContent = hijri;
-    $('#date-greg').textContent = `الموافق ${fmtGreg.format(now)} م`;
+    $('#date-weekday').textContent = fmtWeekday.format(now);
+    $('#date-greg').textContent = `${fmtGreg.format(now)} م`;
   }
 }
 
@@ -276,16 +278,20 @@ function renderHome() {
         <p>${esc(t.school)}</p>
       </section>
 
-      <section class="today" aria-label="اليوم">
+      <section class="hello">
         <h2 class="greeting" id="greeting"></h2>
         <p class="greeting-line" id="greeting-line"></p>
-        <div class="clock" role="timer" aria-label="الساعة الآن بتوقيت الرياض">
-          <span class="clock-time" id="clock-time"></span>
-          <span class="clock-period" id="clock-period"></span>
-        </div>
-        <div class="dates">
+      </section>
+
+      <section class="now" aria-label="التاريخ والوقت">
+        <div class="now-date">
+          <span class="date-weekday" id="date-weekday"></span>
           <span class="date-hijri" id="date-hijri"></span>
           <span class="date-greg" id="date-greg"></span>
+        </div>
+        <div class="now-clock" role="timer" aria-label="الساعة الآن بتوقيت الرياض">
+          <span class="clock-time" id="clock-time"></span>
+          <span class="clock-period" id="clock-period"></span>
         </div>
       </section>
 
@@ -313,12 +319,25 @@ function renderHome() {
   startClock();
 }
 
+// الدروس التي فُتحت على هذا الجهاز (مفاتيح مواضع فقط، بلا أسماء ولا روابط)
+const OPENED_KEY = 'lessons.opened.v1';
+const opened = (() => {
+  try { return new Set(JSON.parse(localStorage.getItem(OPENED_KEY)) || []); } catch { return new Set(); }
+})();
+function markOpened(el) {
+  if (!el.dataset.key) return;
+  opened.add(el.dataset.key);
+  try { localStorage.setItem(OPENED_KEY, JSON.stringify([...opened])); } catch { /* وضع خاص */ }
+  // بعد لحظة، حتى لا تتغير البطاقة تحت الإصبع قبل فتح الملف
+  setTimeout(() => el.classList.add('is-opened'), 400);
+}
+
 function lessonNumber(title) {
   const m = /الدرس\s+([٠-٩0-9]+)/.exec(title);
   return m ? m[1] : null;
 }
 
-function itemHtml(item, { full = false, index = 0 } = {}) {
+function itemHtml(item, { full = false, index = 0, key = '' } = {}) {
   const type = full ? 'full' : (KIND[item.type] ? item.type : 'lesson');
   const num = type === 'lesson' ? lessonNumber(item.title) : null;
   const mark = num ? esc(num) : ICON[type];
@@ -332,9 +351,9 @@ function itemHtml(item, { full = false, index = 0 } = {}) {
       <span class="lesson-title">${esc(item.title)}</span>
       <span class="lesson-meta">${meta}</span>
     </span>
-    ${hasLink ? `<span class="lesson-open">${ICON.open}</span>` : `<span class="lesson-soon">قريباً</span>`}`;
+    ${hasLink ? `<span class="lesson-open">${ICON.open}</span><span class="lesson-done" role="img" aria-label="فُتح من قبل">${ICON.done}</span>` : `<span class="lesson-soon">قريباً</span>`}`;
   const cls = full ? 'full-file' : 'lesson';
-  const attrs = `class="${cls}${hasLink ? '' : ' is-empty'}" data-type="${type}"`;
+  const attrs = `class="${cls}${hasLink ? '' : ' is-empty'}${hasLink && opened.has(key) ? ' is-opened' : ''}" data-type="${type}" data-key="${esc(key)}"`;
   const el = hasLink
     ? `<a ${attrs} href="${esc(item.link)}" target="_blank" rel="noopener noreferrer">${inner}</a>`
     : `<button type="button" ${attrs} data-empty>${inner}</button>`;
@@ -355,22 +374,19 @@ function renderSubject(subject) {
             <span class="subject-name">${esc(subject.title)}</span>
             <h1><span class="grade">${esc(subject.grade)}</span> <span class="dash" aria-hidden="true">—</span> ${esc(ch.title)}</h1>
           </div>
-          ${ci === 0 ? `
-          <aside class="tip">
-            ${ICON.bulb}
-            <p>إذا انفتح الملف كمعاينة، اضغطي ⋮ ثم (فتح في) ثم PowerPoint ليشتغل مع الحركات والأصوات</p>
-          </aside>` : ''}
           <ol class="lessons">
-            ${(ch.lessons || []).map((l, i) => itemHtml(l, { index: i })).join('')}
+            ${(ch.lessons || []).map((l, i) => itemHtml(l, { index: i, key: `${subject.id}/${ch.id ?? ci}/${i}` })).join('')}
           </ol>
-          ${ch.fullFile ? itemHtml(ch.fullFile, { full: true }) : ''}
+          ${ch.fullFile ? itemHtml(ch.fullFile, { full: true, key: `${subject.id}/${ch.id ?? ci}/full` }) : ''}
         </section>`).join('')}
     </div>`;
   window.scrollTo(0, 0);
 }
 
 appEl.addEventListener('click', (e) => {
-  if (e.target.closest('[data-empty]')) toast('لم يُضَف ملف هذا الدرس بعد.');
+  if (e.target.closest('[data-empty]')) return toast('لم يُضَف ملف هذا الدرس بعد.');
+  const link = e.target.closest('a.lesson, a.full-file');
+  if (link) markOpened(link);
 });
 
 function route() {
