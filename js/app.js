@@ -358,7 +358,7 @@ function renderSubject(subject) {
           ${ci === 0 ? `
           <aside class="tip">
             ${ICON.bulb}
-            <p>إذا انفتح الملف في المتصفح، اضغطي (فتح في التطبيق) ليشتغل في PowerPoint مع الحركات والأصوات</p>
+            <p>إذا انفتح الملف كمعاينة، اضغطي ⋮ ثم (فتح في) ثم PowerPoint ليشتغل مع الحركات والأصوات</p>
           </aside>` : ''}
           <ol class="lessons">
             ${(ch.lessons || []).map((l, i) => itemHtml(l, { index: i })).join('')}
