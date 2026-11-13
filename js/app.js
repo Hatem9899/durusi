@@ -343,7 +343,7 @@ function itemHtml(item, { full = false, index = 0, key = '' } = {}) {
   const mark = num ? esc(num) : ICON[type];
   const hasLink = /^https:\/\//.test(item.link || '');
   const meta = full
-    ? `<span>كل دروس الفصل في عرض واحد</span>`
+    ? `<span>${esc(item.note || 'كل دروس الفصل في عرض واحد')}</span>`
     : `<span class="lesson-kind">${KIND[type]}</span>${item.pages ? `<span>ص ${esc(item.pages)}</span>` : ''}`;
   const inner = `
     <span class="lesson-mark">${mark}</span>
