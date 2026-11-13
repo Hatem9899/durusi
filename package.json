@@ -1,0 +1,12 @@
+{
+  "name": "lessons-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "موقع خاص لفتح ملفات الدروس — بيانات مشفّرة برمز دخول",
+  "scripts": {
+    "encrypt": "node scripts/encrypt.mjs",
+    "preview": "node scripts/serve.mjs",
+    "icons": "node scripts/make-icons.mjs"
+  }
+}

@@ -1,0 +1,15 @@
+# البيانات غير المشفّرة — لا تُرفع أبداً
+content/data.json
+content/data.json.*
+content/*.bak
+
+# أسرار محتملة
+.env
+.env.*
+passcode*
+*.secret
+
+node_modules/
+.claude/
+.DS_Store
+Thumbs.db

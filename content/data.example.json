@@ -1,0 +1,29 @@
+{
+  "teacher": {
+    "name": "أ. الاسم هنا",
+    "greetingName": "أستاذة فلانة",
+    "school": "اسم المدرسة"
+  },
+  "subjects": [
+    {
+      "id": "math",
+      "title": "الرياضيات",
+      "grade": "الصف الأول الابتدائي",
+      "icon": "math",
+      "chapters": [
+        {
+          "id": "ch1",
+          "title": "الفصل الأول: عنوان الفصل",
+          "lessons": [
+            { "type": "opener", "title": "افتتاحية الفصل", "pages": "١٠ - ١١", "file": "01.pptx", "link": "" },
+            { "type": "lesson", "title": "الدرس ١: عنوان الدرس", "pages": "١٢ - ١٣", "file": "02.pptx", "link": "" },
+            { "type": "review", "title": "مراجعة", "pages": "١٤", "file": "03.pptx", "link": "" },
+            { "type": "game", "title": "لعبة", "pages": "١٥", "file": "04.pptx", "link": "" },
+            { "type": "test", "title": "اختبار الفصل", "pages": "١٦", "file": "05.pptx", "link": "" }
+          ],
+          "fullFile": { "title": "الفصل كامل في ملف واحد", "file": "full.pptx", "link": "" }
+        }
+      ]
+    }
+  ]
+}

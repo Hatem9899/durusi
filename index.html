@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>دروسي</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#F2F6F4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1917" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="دروسي">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- شاشة الدخول -->
+  <main id="login" class="login" hidden>
+    <div class="login-card">
+      <img class="login-logo" src="moe-logo.png" alt="وزارة التعليم" width="807" height="613">
+      <h1 class="login-title">أهلاً بكِ</h1>
+      <p class="login-sub">أدخلي رمز الدخول لفتح دروسكِ</p>
+
+      <form id="login-form" novalidate>
+        <label class="field-label" for="passcode">رمز الدخول</label>
+        <div class="field">
+          <input id="passcode" name="passcode" type="password" autocomplete="current-password"
+                 autocapitalize="off" autocorrect="off" spellcheck="false" dir="ltr"
+                 enterkeyhint="go" aria-describedby="login-msg" required>
+          <button type="button" id="toggle-pass" class="field-btn" aria-label="إظهار الرمز" aria-pressed="false"></button>
+        </div>
+        <p id="login-msg" class="login-msg" role="alert" aria-live="assertive"></p>
+
+        <label class="check">
+          <input type="checkbox" id="remember" checked>
+          <span class="check-box" aria-hidden="true"></span>
+          <span>تذكّريني على هذا الجهاز</span>
+        </label>
+
+        <button type="submit" id="login-btn" class="btn-primary">
+          <span class="btn-label">دخول</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- التطبيق بعد الدخول -->
+  <div id="app" class="app" hidden></div>
+
+  <!-- مساعدة: الإضافة إلى الشاشة الرئيسية -->
+  <dialog id="help" class="sheet" aria-labelledby="help-title">
+    <div class="sheet-head">
+      <h2 id="help-title">إضافة الموقع إلى الشاشة الرئيسية</h2>
+      <button type="button" class="icon-btn" data-close aria-label="إغلاق"></button>
+    </div>
+    <p class="sheet-intro">ثلاث خطوات في متصفح Safari، وبعدها يفتح الموقع مثل أي تطبيق.</p>
+    <ol class="steps">
+      <li>
+        <div class="step-art" data-art="share"></div>
+        <div>
+          <h3>اضغطي زر المشاركة</h3>
+          <p>المربع الذي يخرج منه سهم للأعلى، في شريط Safari. إن لم يظهر فاضغطي النقاط الثلاث (•••) أولاً.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-art" data-art="add"></div>
+        <div>
+          <h3>اختاري «إضافة إلى الشاشة الرئيسية»</h3>
+          <p>مرّري القائمة للأسفل قليلاً حتى تجديها.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-art" data-art="home"></div>
+        <div>
+          <h3>اضغطي «إضافة»</h3>
+          <p>ستظهر أيقونة «دروسي» بين تطبيقاتكِ. افتحيها وأدخلي الرمز مرة واحدة فقط.</p>
+        </div>
+      </li>
+    </ol>
+    <button type="button" class="btn-primary" data-close>فهمت</button>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <noscript><p style="padding:2rem;text-align:center">يحتاج هذا الموقع إلى تفعيل JavaScript.</p></noscript>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
